@@ -1,29 +1,48 @@
+# TODO: add new identities
+# TODO: backwards solve (e.g. average --> sides)
+# FIXME: loc allow solve var not to c
+# TODO: heron add reg perimeter
+# FIXME: add los loc mutliple solutions
+
+
+
+
+
+
 from __future__ import division
 from sympy import *
 x, y, z, t = symbols('x y z t')
 k, m, n = symbols('k m n', integer=True)
 f, g, h = symbols('f g h', cls=Function)
 
+from sympy import expand, trigsimp, expand_trig
 from sympy import sin, pi, cos, tan, asin, acos, atan, Eq, Function, exp, simplify, solveset, S
-from sympy.abc import x
+from sympy.abc import x, theta
 from sympy.solvers import solve
 from sympy import Symbol
 x = Symbol('x')
 
 
-def heron(A, B, C, showSteps=False):
+
+
+ 
+def heron(A, B, C, showSteps=False, justsolution=False):
     showStepsList = []
     
     Svar = N((A + B + C)/2,5)
     showStepsList.append("S = " + str(Svar))
-    Area = N(sqrt(Svar*(Svar-A)*(Svar-B)*(Svar-C)),5)
+    Area = N(sqrt((Svar)*((Svar-A)*(Svar-B)*(Svar-C))),5)
     showStepsList.append("Area = " + str(Area))
     
     if (showSteps == True):
         for step in showStepsList:
             print(step)
     
-    return ("Area: " + str(Area) + "\nSemi-Per: " + str(Svar))
+    if justsolution == False:
+        return ("Area: " + str(Area) + "\nSemi-Per: " + str(Svar))
+    else:
+        return Area
+
 
 
 def thesolver(A, B, C, a, b, c, method="sin", showSteps=False):
@@ -275,13 +294,6 @@ def dointeractive():
                             c = int(uinput)
                             
                 
-            
-            
-        
-        
-        
-
-
 def userInputLoop():
     print("For now you have to use the notation as follows: ")
     print(""">>> thesolver(A, B, C, a, b, c, "sin/cos", True/False)""")
@@ -304,8 +316,135 @@ def userInputLoop():
                 print("Something went wrong when trying to do evaluate the user input.")
 
 
+
+
+
+# NOT CURRENTLY WORKING
+def challenge15(times = 5, forever=False):
+    from random import randint
+    if (forever == True):
+        times = -12345
+
+    while (times == -12345 or times > 0):
+        # if (True):
+        try:
+            c = randint(0,12)
+            # print(str(int(12-c)))
+            a = randint(0,int(N(12-c)))
+            b = 12 - c - a
+            A = 0
+            B = 0
+            C = 0
+
+            if (a >= b and a >= c):
+                C = a
+                B = b
+                A = c
+            elif (b >= a and b >= c):
+                C = b
+                A = a
+                B = c
+            else:
+                C = c
+                B = b
+                A = a
+       
+
+            if (forever == True):
+                if(Eq(N((A**2)+(B**2),5),N(C**2,5)) == False):
+                    # print("Got part of it!")
+                    if ((heron(A,B,C,False,True)).is_integer() == True):
+                        print("GOT IT!\nANSWER IS: A : " + str(A) + " B : " + str(B) + " C : " + str(C))
+                        times = 0
+                        exit(0)
+            else:
+                if (heron(A,B,C,False,True).is_integer() == True):
+                    print("int int int!")
+                    print("Trying: " + str(A) + " " + str(B) + " " + str(C))
+                    print("Sum: " + str(A+B+C))
+                    print("Solutions: " + heron(A,B,C))
+                    print(str(N((A**2)+(B**2),5)) + " = " + str(N(C**2,5)))
+                    if(Eq(N((A**2)+(B**2),5),N(C**2,5)) == False):
+                        print("Not right triangle!")
+                    print("\n\n")
+
+        except:
+           None
             
+        1
+        if times != 12345:
+            times = times - 1
+
+               
+
+
             
+def challenge16_7(times = 20):
+    from random import randint
+    
+    for i in range(times):
+        c = randint(0,500)
+        a = randint(0,int(N(500-c)))
+        b = 500 - c - a
+        A = 0
+        B = 0
+        C = 0
+
+        if (a >= b and a >= c):
+            C = a
+            B = b
+            A = c
+        elif (b >= a and b >= c):
+            C = b
+            A = a
+            B = c
+        else:
+            C = c
+            B = b
+            A = a
+
+        print("Trying A: " + str(A) + " B: " + str(B) + " C: " + str(C) + "...")
+        print("Area: " + str(heron(A,B,C,False,True)))
+        try:
+            if (float(sympify(heron(A,B,C,False,True))) == int(sympify(heron(A,B,C,False,True)))):
+                print("Area is int!")
+        except:
+            None
+        if (Eq(N((A**2)+(B**2),5),N(C**2,5)) == False):
+            print("Not right triangle")
+  
+        try:
+            if ((Eq(N((A**2)+(B**2),5),N(C**2,5)) == False) and (float(sympify(heron(A,B,C,False,True))) == int(sympify(heron(A,B,C,False,True))))):
+                print("Satisfies both!")
+                exit(0)
+        except:
+            None
+            
+        print("\n")
+        
+            
+
+# NOT WORKING
+def challenge16_9():
+    a, b, c = symbols('a b c')
+    expr1 = (b*((2*a*cos(theta))-b))
+    expr2 = ((a-c)*(c+a))
+    expr = (Eq(expr1, expr2))
+    
+    print(solve(expr1))
+    print(expand_trig(expr1))
+
+    print(solve(expr2))
+    print(expand_trig(expr2))
+
+    print(solve(expr))
+    print(expand_trig(expr))
+
+
+    
+
+
+    
 userInputLoop()
 
 
